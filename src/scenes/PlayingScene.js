@@ -1,8 +1,10 @@
 import Phaser from "phaser";
-import Player from "../characters/player";
 import Config from "../config";
+import Player from "../characters/player";
+import Mob from "../characters/mob";
 import { setBackground } from "../utils/backgroundManager";
 import { addMobEvent } from "../utils/mobManager";
+import { addAttackEvent } from "../utils/attackManager";
 
 export default class PlayingScene extends Phaser.Scene {
   constructor() {
@@ -37,11 +39,22 @@ export default class PlayingScene extends Phaser.Scene {
 
     this.m_cursorKeys = this.input.keyboard.createCursorKeys();
 
+    // MOB
     this.m_mobs = this.physics.add.group();
+    // 처음 시작하고 바로 생성. 그래서 mob이 필요한 다른 update 내 이벤트들이 에러뜨지 않게 한다.
+    this.m_mobs.add(new Mob(this, 0, 0, "mob1", "mob1_anim", 10, 0.9));
     this.m_mobEvent = [];
 
+    // 처음 시작하고 1초 마다 생성
     // scene, repeatGap, mobTexture, mobAnim, mobHp, mobDropRate
     addMobEvent(this, 1000, "mob2", "mob2_anim", 10, 0.9);
+
+    // ATTACK
+    this.m_weaponDynamic = this.add.group();
+    this.m_weaponStatics = this.add.group();
+    this.m_attackEvents = {};
+    //
+    addAttackEvent(this, "beam", 10, 1, 1000);
   }
 
   update() {
@@ -62,6 +75,15 @@ export default class PlayingScene extends Phaser.Scene {
      */
     this.m_background.tilePositionX = this.m_player.x - Config.width / 2;
     this.m_background.tilePositionY = this.m_player.y - Config.width / 2;
+
+    /*
+      closest를 구하는 메소드가 내장되어 있다.  
+    */
+    const closest = this.physics.closest(
+      this.m_player,
+      this.m_mobs.getChildren()
+    );
+    this.m_closest = closest;
   }
 
   movePlayerManager() {
