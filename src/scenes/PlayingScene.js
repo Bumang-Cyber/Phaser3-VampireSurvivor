@@ -1,7 +1,8 @@
 import Phaser from "phaser";
 import Player from "../characters/player";
-import { setBackground } from "../utils/backgroundManager";
 import Config from "../config";
+import { setBackground } from "../utils/backgroundManager";
+import { addMobEvent } from "../utils/mobManager";
 
 export default class PlayingScene extends Phaser.Scene {
   constructor() {
@@ -35,6 +36,12 @@ export default class PlayingScene extends Phaser.Scene {
     setBackground(this, "background1");
 
     this.m_cursorKeys = this.input.keyboard.createCursorKeys();
+
+    this.m_mobs = this.physics.add.group();
+    this.m_mobEvent = [];
+
+    // scene, repeatGap, mobTexture, mobAnim, mobHp, mobDropRate
+    addMobEvent(this, 1000, "mob2", "mob2_anim", 10, 0.9);
   }
 
   update() {

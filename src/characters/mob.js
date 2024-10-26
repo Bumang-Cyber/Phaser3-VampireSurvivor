@@ -5,7 +5,7 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, texture, animKey, initHp, dropRate) {
     super(scene, x, y, texture);
     scene.add.existing(this);
-    scene.Physics.add.existing(this);
+    scene.physics.add.existing(this);
 
     this.play(animKey);
 
@@ -31,6 +31,8 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
       this.setBodySize(40, 64);
     }
 
+    // this.scene.time.addEvent는 timer를 반환한다.
+    // reset, pause, resume, remove 등을 할 수 있다.
     const timer = this.scene.time.addEvent({
       delay: 100,
       callback: () => {
