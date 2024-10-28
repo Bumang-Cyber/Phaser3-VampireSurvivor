@@ -1,4 +1,7 @@
 import Phaser from "phaser";
+import Explosion from "../effects/explosion";
+import ExpUp from "../items/expUp";
+("../effects/explosion");
 
 export default class Mob extends Phaser.Physics.Arcade.Sprite {
   // 씬, x, y, 스프라이트, 이름, 첫HP, 드랍률
@@ -59,7 +62,7 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
 
   update() {
     if (!this.body) {
-      this.scene.events.off("update", this.update, this);
+      // this.scene.events.off("update", this.update, this);
       return;
     }
 
@@ -67,6 +70,10 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
       this.flipX = true;
     } else {
       this.flipX = false;
+    }
+
+    if (this.m_hp <= 0) {
+      this.die();
     }
   }
 
@@ -124,6 +131,20 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
       },
       loop: false,
     });
+  }
+
+  die() {
+    new Explosion(this.scene, this.x, this.y);
+    this.scene.m_explosionSound.play();
+
+    if (Math.random() < this.m_dropRate) {
+      const expUp = new ExpUp(this.scene, this);
+      this.scene.m_expUps.add(expUp);
+    }
+
+    this.scene.time.removeEvent(this.m_events);
+
+    this.destroy();
   }
 }
 

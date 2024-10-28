@@ -98,6 +98,17 @@ export default class PlayingScene extends Phaser.Scene {
       null,
       this
     );
+
+    // item
+    // 몹이 죽을 때 this.scene.m_expUps.add(expUp)를 해줌.
+    this.m_expUps = this.physics.add.group();
+    this.physics.add.overlap(
+      this.m_player,
+      this.m_expUps,
+      this.pickExpUp,
+      null,
+      this
+    );
   }
 
   update() {
@@ -127,6 +138,14 @@ export default class PlayingScene extends Phaser.Scene {
       this.m_mobs.getChildren()
     );
     this.m_closest = closest;
+  }
+
+  pickExpUp(player, expUp) {
+    expUp.disableBody(true, true);
+    expUp.destroy();
+
+    this.m_expUpSound.play();
+    console.log("경험치 ", expUp.m_exp, " 상승");
   }
 
   movePlayerManager() {
