@@ -49,7 +49,7 @@ export default class TopBar extends Phaser.GameObjects.Graphics {
 
   gainLevel() {
     this.m_level += 1;
-    this.m_levelLabel.text = `MOBS KILLED ${this.m_level
+    this.m_levelLabel.text = `Level ${this.m_level
       .toString()
       .padStart(3, "0")}`;
 

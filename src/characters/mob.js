@@ -125,7 +125,7 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
     // 1초 후 true로 변경합니다.
     this.m_canBeAttacked = false;
     this.scene.time.addEvent({
-      delay: 1000,
+      delay: 200,
       callback: () => {
         this.m_canBeAttacked = true;
       },
@@ -142,6 +142,7 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
       this.scene.m_expUps.add(expUp);
     }
 
+    this.scene.m_topBar.gainMobsKilled();
     this.scene.time.removeEvent(this.m_events);
 
     this.destroy();

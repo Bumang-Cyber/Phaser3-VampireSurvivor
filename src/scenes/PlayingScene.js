@@ -3,10 +3,16 @@ import Config from "../config";
 import Player from "../characters/player";
 import Mob from "../characters/mob";
 import { setBackground } from "../utils/backgroundManager";
-import { addMobEvent } from "../utils/mobManager";
-import { addAttackEvent } from "../utils/attackManager";
+import { addMobEvent, removeOldestMobEvent } from "../utils/mobManager";
+import {
+  addAttackEvent,
+  removeAttack,
+  setAttackDamage,
+  setAttackScale,
+} from "../utils/attackManager";
 import TopBar from "../ui/topBar";
 import ExpBar from "../ui/expBar";
+import { pause } from "../utils/pauseManager";
 
 export default class PlayingScene extends Phaser.Scene {
   constructor() {
@@ -56,7 +62,7 @@ export default class PlayingScene extends Phaser.Scene {
     this.m_weaponStatic = this.add.group();
     this.m_attackEvents = {};
     //
-    addAttackEvent(this, "beam", 10, 1, 1000);
+    addAttackEvent(this, "claw", 10, 2.3, 1500);
 
     // collisions
     /**
@@ -115,6 +121,15 @@ export default class PlayingScene extends Phaser.Scene {
     // TopBar, ExpBar
     this.m_topBar = new TopBar(this);
     this.m_expBar = new ExpBar(this, 50);
+
+    // event handler
+    this.input.keyboard.on(
+      "keydown-ESC", // ESC를 눌렀을 때의 key?
+      () => {
+        pause(this, "pause");
+      },
+      this
+    );
   }
 
   update() {
@@ -154,6 +169,41 @@ export default class PlayingScene extends Phaser.Scene {
     // console.log("경험치 ", expUp.m_exp, " 상승");
 
     this.m_expBar.increase(expUp.m_exp);
+    if (this.m_expBar.m_currentExp >= this.m_expBar.m_maxExp) {
+      // this.m_topBar.gainLevel()
+      pause(this, "levelUp");
+    }
+  }
+
+  afterLevelUp() {
+    this.m_topBar.gainLevel();
+
+    switch (this.m_topBar.m_level) {
+      case 2:
+        removeOldestMobEvent(this);
+        addMobEvent(this, 1000, "mob2", "mob2_anim", 20, 0.8);
+        setAttackScale(this, "claw", 4);
+        break;
+      case 3:
+        removeOldestMobEvent(this);
+        addMobEvent(this, 1000, "mob3", "mob3_anim", 30, 0.7);
+        addAttackEvent(this, "catnip", 20, 2);
+        break;
+      case 4:
+        removeOldestMobEvent(this);
+        addMobEvent(this, 1000, "mob4", "mob4_anim", 40, 0.7);
+        setAttackScale(this, "catnip", 4);
+        break;
+      case 5:
+        removeAttack(this, "claw");
+        addAttackEvent(this, "beam", 10, 1, 1000);
+        break;
+      case 6:
+        setAttackScale(this, "beam", 3);
+        break;
+      case 7:
+        break;
+    }
   }
 
   movePlayerManager() {
@@ -191,5 +241,10 @@ export default class PlayingScene extends Phaser.Scene {
     }
 
     this.m_player.move(vector);
+
+    // static 공격들은 player가 이동하면 그대로 따라오도록 해줍니다.
+    this.m_weaponStatic.children.each((weapon) => {
+      weapon.move(vector);
+    }, this);
   }
 }
