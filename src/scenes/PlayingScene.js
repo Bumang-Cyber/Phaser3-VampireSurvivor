@@ -5,6 +5,8 @@ import Mob from "../characters/mob";
 import { setBackground } from "../utils/backgroundManager";
 import { addMobEvent } from "../utils/mobManager";
 import { addAttackEvent } from "../utils/attackManager";
+import TopBar from "../ui/topBar";
+import ExpBar from "../ui/expBar";
 
 export default class PlayingScene extends Phaser.Scene {
   constructor() {
@@ -109,6 +111,10 @@ export default class PlayingScene extends Phaser.Scene {
       null,
       this
     );
+
+    // TopBar, ExpBar
+    this.m_topBar = new TopBar(this);
+    this.m_expBar = new ExpBar(this, 50);
   }
 
   update() {
@@ -145,7 +151,9 @@ export default class PlayingScene extends Phaser.Scene {
     expUp.destroy();
 
     this.m_expUpSound.play();
-    console.log("경험치 ", expUp.m_exp, " 상승");
+    // console.log("경험치 ", expUp.m_exp, " 상승");
+
+    this.m_expBar.increase(expUp.m_exp);
   }
 
   movePlayerManager() {

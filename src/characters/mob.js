@@ -147,19 +147,3 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
     this.destroy();
   }
 }
-
-/*
-scene.time.addEvent의 일반적인 구조:
-
-this.scene.time.addEvent({
-  delay: 시간(ms),     // 몇 밀리초 후에 실행할지 설정
-  callback: 함수,      // 실행될 함수
-  callbackScope: this, // 콜백 함수 내에서 'this'가 가리키는 범위를 설정
-  loop: true/false     // 반복 여부 설정
-});
-
-scene.time.addEvent는 Phaser의 내장함수로, 파라미터로 전달한 config객체에 따라 이벤트를 발생시킨다.
-
-moveToObject라는 Phaser 내장 함수의 파라미터는 다음과 같다.
-moveToObject(gameObject, destination, [speed], [maxTime])
-*/
