@@ -13,6 +13,7 @@ import {
 import TopBar from "../ui/topBar";
 import ExpBar from "../ui/expBar";
 import { pause } from "../utils/pauseManager";
+import { createTime } from "../ui/time";
 
 export default class PlayingScene extends Phaser.Scene {
   constructor() {
@@ -130,6 +131,9 @@ export default class PlayingScene extends Phaser.Scene {
       },
       this
     );
+
+    // TIME 생성
+    createTime(this);
   }
 
   update() {
