@@ -13,7 +13,7 @@ import {
 import TopBar from "../ui/topBar";
 import ExpBar from "../ui/expBar";
 import { pause } from "../utils/pauseManager";
-import { createTime } from "../ui/time";
+import { createTime } from "../utils/time";
 
 export default class PlayingScene extends Phaser.Scene {
   constructor() {
@@ -174,7 +174,6 @@ export default class PlayingScene extends Phaser.Scene {
 
     this.m_expBar.increase(expUp.m_exp);
     if (this.m_expBar.m_currentExp >= this.m_expBar.m_maxExp) {
-      // this.m_topBar.gainLevel()
       pause(this, "levelUp");
     }
   }
