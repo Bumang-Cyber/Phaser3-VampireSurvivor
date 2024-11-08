@@ -3,7 +3,7 @@ import Config from "../config";
 import Player from "../characters/player";
 import Mob from "../characters/mob";
 import { setBackground } from "../utils/backgroundManager";
-import { addMobEvent, removeOldestMobEvent } from "../utils/mobManager";
+import { addMob, addMobEvent, removeOldestMobEvent } from "../utils/mobManager";
 import {
   addAttackEvent,
   removeAttack,
@@ -57,6 +57,9 @@ export default class PlayingScene extends Phaser.Scene {
     // 처음 시작하고 1초 마다 생성
     // scene, repeatGap, mobTexture, mobAnim, mobHp, mobDropRate
     addMobEvent(this, 1000, "mob2", "mob2_anim", 10, 0.9);
+
+    // 보스몹 추가
+    addMob(this, "lion", "lion_anim", 100, 0);
 
     // ATTACK
     this.m_weaponDynamic = this.add.group();
@@ -132,8 +135,7 @@ export default class PlayingScene extends Phaser.Scene {
       this
     );
 
-    // TIME 생성
-    createTime(this);
+    this.sceneTime = createTime(this);
   }
 
   update() {
@@ -163,6 +165,10 @@ export default class PlayingScene extends Phaser.Scene {
       this.m_mobs.getChildren()
     );
     this.m_closest = closest;
+
+    if (!this.m_mobEvent) {
+      this.sceneTime.destroy();
+    }
   }
 
   pickExpUp(player, expUp) {
@@ -185,7 +191,8 @@ export default class PlayingScene extends Phaser.Scene {
       case 2:
         removeOldestMobEvent(this);
         addMobEvent(this, 1000, "mob2", "mob2_anim", 20, 0.8);
-        setAttackScale(this, "claw", 4);
+        setAttackScale(this, "claw", 5);
+        // addAttackEvent(this, "claw", 20, 4, 2000);
         break;
       case 3:
         removeOldestMobEvent(this);

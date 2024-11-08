@@ -11,7 +11,7 @@ export function createTime(scene) {
     .setDepth(100)
     .setScrollFactor(0);
   // 1초마다 플레이 시간에 1을 더하고 이를 mm:ss 형식으로 변환한 텍스트를 화면에 띄움
-  scene.time.addEvent({
+  const timer = scene.time.addEvent({
     callback: () => {
       scene.m_secondElapsed += 1;
       scene.m_timeText.setText(getTimeString(scene.m_secondElapsed));
@@ -19,6 +19,8 @@ export function createTime(scene) {
     delay: 1000,
     loop: true,
   });
+
+  return timer;
 }
 
 // 시간을 초 단위로 받아 mm:ss 형식으로 변환해주는 함수입니다.

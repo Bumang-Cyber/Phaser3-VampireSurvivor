@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import Explosion from "../effects/explosion";
 import ExpUp from "../items/expUp";
+import { removeAttack } from "../utils/attackManager";
+import { winGame } from "../utils/sceneManager";
 ("../effects/explosion");
 
 export default class Mob extends Phaser.Physics.Arcade.Sprite {
@@ -31,6 +33,7 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
     } else if (texture === "mob4") {
       this.setBodySize(24, 32);
     } else if (texture === "lion") {
+      this.m_speed = 60;
       this.setBodySize(40, 64);
     }
 
@@ -58,6 +61,8 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
     // 공격 받을 수 있는지 여부를 뜻하는 멤버 변수입니다.
     // static 공격의 경우 처음 접촉했을 때 쿨타임을 주지 않으면 매 프레임당 계속해서 공격한 것으로 처리되므로 해당 변수로 쿨타임을 만들게 되었습니다.
     this.m_canBeAttacked = true;
+
+    this.m_isDead = false;
   }
 
   update() {
@@ -72,7 +77,7 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
       this.flipX = false;
     }
 
-    if (this.m_hp <= 0) {
+    if (this.m_hp <= 0 && !this.m_isDead) {
       this.die();
     }
   }
@@ -134,17 +139,65 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
   }
 
   die() {
-    new Explosion(this.scene, this.x, this.y);
-    this.scene.m_explosionSound.play();
-
-    if (Math.random() < this.m_dropRate) {
-      const expUp = new ExpUp(this.scene, this);
-      this.scene.m_expUps.add(expUp);
-    }
+    this.m_isDead = true;
 
     this.scene.m_topBar.gainMobsKilled();
     this.scene.time.removeEvent(this.m_events);
 
-    this.destroy();
+    if (this.texture.key === "lion") {
+      // mob 추가 이벤트를 없애기
+      console.log(this.scene.m_mobEvent, "this.scene.m_mobEvent, 1");
+      this.scene.m_mobEvent = null;
+      console.log(this.scene.m_mobEvent, "this.scene.m_mobEvent, 2");
+      this.scene.time.removeEvent(this.scene.m_mobs);
+      console.log(this.scene.m_mobEvent, "this.scene.m_mobEvent, 3");
+      console.log(this.scene.m_mobs, "this.scene.m_mobs, 3");
+      // 시간 가는 것을 제거. (destroy 시 이벤트 객체의 내부 값들을 무효화함. 그러나 이벤트 객체 형태는 남음)
+      // this.scene.m_timerEvent.destroy();
+      // 참조까지 완전 제거.
+      // this.scene.m_timerEvent = null;
+      // 공격을 제거합니다. (attackManager.js 참고)
+      removeAttack(this.scene, "catnip");
+      removeAttack(this.scene, "beam");
+      removeAttack(this.scene, "claw");
+      // 플레이어가 보스몹과 접촉해도 HP가 깎이지 않도록 만듭니다.
+      this.disableBody(true, false);
+      // 보스몹이 움직이던 애니메이션을 멉춥니다.
+      this.play("lion_idle");
+      // 모든 몹의 움직임을 멈춥니다.
+      this.scene.m_mobs.children.each((mob) => {
+        mob.m_speed = 0;
+      });
+
+      // 보스몹이 서서히 투멍해지도록 합니다.
+      this.scene.time.addEvent({
+        delay: 30,
+        callback: () => {
+          this.alpha -= 0.01;
+        },
+        repeat: 100,
+      });
+      // 보스몹이 투명해진 후, GameClearScene으로 화면을 전환합니다.
+      this.scene.time.addEvent({
+        delay: 4000,
+        callback: () => {
+          winGame(this.scene);
+        },
+        loop: false,
+      });
+    }
+
+    // 보스몹이 아닌 몹이 죽었을 때
+    else {
+      new Explosion(this.scene, this.x, this.y);
+      this.scene.m_explosionSound.play();
+
+      if (Math.random() < this.m_dropRate) {
+        const expUp = new ExpUp(this.scene, this);
+        this.scene.m_expUps.add(expUp);
+      }
+      // 몹이 사라집니다.
+      this.destroy();
+    }
   }
 }

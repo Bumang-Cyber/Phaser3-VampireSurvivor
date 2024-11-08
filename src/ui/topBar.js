@@ -11,7 +11,7 @@ export default class TopBar extends Phaser.GameObjects.Graphics {
       .setScrollFactor(0);
 
     this.m_mobsKilled = 0;
-    this.m_mob_killedLabel = scene.add
+    this.m_mobsKilledLabel = scene.add
       .bitmapText(
         5,
         1,
@@ -41,8 +41,8 @@ export default class TopBar extends Phaser.GameObjects.Graphics {
   }
 
   gainMobsKilled() {
-    this.m_mob_killed += 1;
-    this.m_mob_killedLabel.text = `MOBS KILLED ${this.m_mob_killed
+    this.m_mobsKilled += 1;
+    this.m_mobsKilledLabel.text = `MOBS KILLED ${this.m_mobsKilled
       .toString()
       .padStart(6, "0")}`;
   }
