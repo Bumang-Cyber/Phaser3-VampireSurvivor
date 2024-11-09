@@ -3,6 +3,7 @@ import Explosion from "../effects/explosion";
 import ExpUp from "../items/expUp";
 import { removeAttack } from "../utils/attackManager";
 import { winGame } from "../utils/sceneManager";
+import { removeAllMobEvents } from "../utils/mobManager";
 ("../effects/explosion");
 
 export default class Mob extends Phaser.Physics.Arcade.Sprite {
@@ -146,6 +147,7 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
 
     if (this.texture.key === "lion") {
       // mob 추가 이벤트를 없애기
+      removeAllMobEvents(this.scene);
       console.log(this.scene.m_mobEvent, "this.scene.m_mobEvent, 1");
       this.scene.m_mobEvent = null;
       console.log(this.scene.m_mobEvent, "this.scene.m_mobEvent, 2");

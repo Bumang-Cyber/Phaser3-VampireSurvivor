@@ -34,3 +34,10 @@ export function addMob(scene, mobTexture, mobAnim, mobHp) {
   let [x, y] = getRandomPosition(scene.m_player.x, scene.m_player.y);
   scene.m_mobs.add(new Mob(scene, x, y, mobTexture, mobAnim, mobHp, 0));
 }
+
+export function removeAllMobEvents(scene) {
+  scene.m_mobEvent.forEach((event) => {
+    event.remove(); // 타이머 이벤트 제거
+  });
+  scene.m_mobEvent = []; // 배열 초기화
+}

@@ -58,9 +58,6 @@ export default class PlayingScene extends Phaser.Scene {
     // scene, repeatGap, mobTexture, mobAnim, mobHp, mobDropRate
     addMobEvent(this, 1000, "mob2", "mob2_anim", 10, 0.9);
 
-    // 보스몹 추가
-    addMob(this, "lion", "lion_anim", 100, 0);
-
     // ATTACK
     this.m_weaponDynamic = this.add.group();
     this.m_weaponStatic = this.add.group();
@@ -191,27 +188,23 @@ export default class PlayingScene extends Phaser.Scene {
       case 2:
         removeOldestMobEvent(this);
         addMobEvent(this, 1000, "mob2", "mob2_anim", 20, 0.8);
-        setAttackScale(this, "claw", 5);
-        // addAttackEvent(this, "claw", 20, 4, 2000);
+        addAttackEvent(this, "catnip", 20, 2);
         break;
       case 3:
         removeOldestMobEvent(this);
         addMobEvent(this, 1000, "mob3", "mob3_anim", 30, 0.7);
-        addAttackEvent(this, "catnip", 20, 2);
+        setAttackScale(this, "catnip", 4);
+        setBackground(this, "background2");
         break;
       case 4:
         removeOldestMobEvent(this);
         addMobEvent(this, 1000, "mob4", "mob4_anim", 40, 0.7);
-        setAttackScale(this, "catnip", 4);
-        break;
-      case 5:
-        removeAttack(this, "claw");
         addAttackEvent(this, "beam", 10, 1, 1000);
         break;
-      case 6:
-        setAttackScale(this, "beam", 3);
-        break;
-      case 7:
+      case 5:
+        // 보스몹 추가
+        addMob(this, "lion", "lion_anim", 100, 0);
+        setBackground(this, "background3");
         break;
     }
   }
