@@ -1,5 +1,4 @@
 import LoadingScene from "./scenes/LoadingScene";
-// import MainScene from "./scenes/MainScene";
 import PlayingScene from "./scenes/PlayingScene";
 import GameOverScene from "./scenes/GameOverScene";
 import MainScene from "./scenes/MainScene";
