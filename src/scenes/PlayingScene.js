@@ -4,16 +4,12 @@ import Player from "../characters/player";
 import Mob from "../characters/mob";
 import { setBackground } from "../utils/backgroundManager";
 import { addMob, addMobEvent, removeOldestMobEvent } from "../utils/mobManager";
-import {
-  addAttackEvent,
-  removeAttack,
-  setAttackDamage,
-  setAttackScale,
-} from "../utils/attackManager";
+import { addAttackEvent, setAttackScale } from "../utils/attackManager";
 import TopBar from "../ui/topBar";
 import ExpBar from "../ui/expBar";
 import { pause } from "../utils/pauseManager";
 import { createTime } from "../utils/time";
+import LevelUpSelector from "../ui/LevelUpSelector";
 
 export default class PlayingScene extends Phaser.Scene {
   constructor() {
@@ -62,7 +58,7 @@ export default class PlayingScene extends Phaser.Scene {
     this.m_weaponDynamic = this.add.group();
     this.m_weaponStatic = this.add.group();
     this.m_attackEvents = {};
-    //
+
     addAttackEvent(this, "claw", 10, 2.3, 1500);
 
     // collisions
@@ -133,6 +129,8 @@ export default class PlayingScene extends Phaser.Scene {
     );
 
     this.sceneTime = createTime(this);
+
+    this.m_levelUpSelector = new LevelUpSelector(this);
   }
 
   update() {
