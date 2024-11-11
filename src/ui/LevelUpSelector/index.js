@@ -30,7 +30,12 @@ export default class LevelUpSelector extends Phaser.GameObjects.Container {
     scene.add.existing(this);
   }
 
-  drawSelectButtonBackgroundAndSkillName(WIDTH, HEIGHT, TOP_MARGIN) {
+  drawSelectButtonBackgroundAndSkillName(
+    WIDTH,
+    HEIGHT,
+    TOP_MARGIN,
+    ChooseSkillObject
+  ) {
     const FIRST_SELECT_ORIGIN = -WIDTH / 2;
     const SECOND_SELECT_ORIGIN = -WIDTH / 6;
     const THIRD_SELECT_ORIGIN = WIDTH / 6;
